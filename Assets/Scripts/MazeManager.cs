@@ -25,6 +25,8 @@ public class MazeManager : MonoBehaviour {
     [SerializeField]
     private GameObject doorPrefab;
     [SerializeField]
+    private GameObject floorPrefab;
+    [SerializeField]
     private int sizeX;
     [SerializeField]
     private int sizeY;
@@ -38,6 +40,8 @@ public class MazeManager : MonoBehaviour {
     private int mazeStartX, mazeStartY, mazeEndX, mazeEndY;
 
     private bool[][] mazeGrid;
+
+    private GameObject[][] floorObjects;
 
 	void Start () {
         sizeX = Mathf.Max(sizeX, 17);
@@ -56,7 +60,7 @@ public class MazeManager : MonoBehaviour {
         mazeStartX = mazeEndX;
         mazeStartY = 0;
 
-        startNewRound();
+        StartNewRound();
 	}
 
     public bool[][] GetMazeGrid()
@@ -64,11 +68,13 @@ public class MazeManager : MonoBehaviour {
         return mazeGrid;
     }
 
-    private void startNewRound() {
+    public void StartNewRound() {
+        enemyController.StopSpawningEnemies();
         Time.timeScale = 0;
         createNewMaze();
+        player.transform.position = getPlayerStartPosition();
         enemyController.StartSpawningEnemies();
-        StartCoroutine(movePlayer(new Vector3(mazeStartX, 0, mazeStartY), getPlayerStartPosition(), 2f, mazeStarted));
+        StartCoroutine(movePlayer(new Vector3(mazeStartX, 0, mazeStartY), player.transform.position, 2f, mazeStarted));
     }
 
     private void mazeStarted()
@@ -95,6 +101,8 @@ public class MazeManager : MonoBehaviour {
         createMazeGrid();
 
         // Create new blocks
+
+        // Walls
         for (int x = 0; x < sizeX; x++)
         {
             for (int y = 0; y < sizeY; y++)
@@ -104,8 +112,23 @@ public class MazeManager : MonoBehaviour {
                     GameObject wall = Instantiate(wallPrefab) as GameObject;
                     wall.transform.SetParent(transform);
                     wall.transform.position = new Vector3(x, 0, y);
-                    wall.name = x + ", " + y;
+                    wall.name = "Wall " + x + ", " + y;
                 }
+            }
+        }
+
+        // Floor
+        floorObjects = new GameObject[sizeX][];
+        for (int x = 0; x < sizeX; x++)
+        {
+            floorObjects = new GameObject[sizeY][];
+            for (int y = 0; y < sizeY; y++)
+            {
+                GameObject floor = Instantiate(floorPrefab) as GameObject;
+                floor.transform.SetParent(transform);
+                floor.transform.position = new Vector3(x, -1, y);
+                floor.name = "Floor " + x + ", " + y;
+
             }
         }
 
@@ -130,6 +153,11 @@ public class MazeManager : MonoBehaviour {
         endTrigger.Initialize(this);
 
         mazeGrid[mazeEndX][mazeEndY] = true;
+    }
+
+    public void DisableFloorTile(int x, int y)
+    {
+        floorObjects[x][y].SetActive(false);
     }
 
     // Random Prim
@@ -217,9 +245,8 @@ public class MazeManager : MonoBehaviour {
 
     private void mazeEnded()
     {
-        enemyController.StopSpawningEnemies();
         Time.timeScale = 1;
-        startNewRound();
+        StartNewRound();
     }
 
     private IEnumerator movePlayer(Vector3 from, Vector3 to, float duration, System.Action done)

@@ -2,5 +2,5 @@
 
 public interface IEnemyController
 {
-    void StartBrain(bool[][] mazeGrid, GameObject player, EnemyManager enemyManager);
+    void StartBrain(MazeManager mazeController, GameObject player, EnemyManager enemyManager);
 }

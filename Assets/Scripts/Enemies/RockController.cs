@@ -12,15 +12,18 @@ public class RockController : MonoBehaviour, IEnemyController {
     private float lastMovement = 0;
     private EnemyManager enemyManager;
     private AudioSource sound;
+    private GameObject player;
 
     void Start()
     {
         sound = GetComponentInChildren<AudioSource>();
     }
 
-    public void StartBrain(bool[][] mazeGrid, GameObject player, EnemyManager enemyManager)
+    public void StartBrain(MazeManager mazeController, GameObject player, EnemyManager enemyManager)
     {
+        bool[][] mazeGrid = mazeController.GetMazeGrid();
         this.enemyManager = enemyManager;
+        this.player = player;
         int startX = Mathf.RoundToInt(transform.position.x);
         int startY = Mathf.RoundToInt(transform.position.z);
         int xCount = 0, yCount = 0;
@@ -121,7 +124,9 @@ public class RockController : MonoBehaviour, IEnemyController {
             return;
         }
 
-        Ray ray = new Ray(gameObject.transform.position, other.gameObject.transform.position - gameObject.transform.position);
+        Vector3 from = transform.position + Vector3.up * 0.5f;
+        Vector3 to = player.transform.position + Vector3.up * 0.5f;
+        Ray ray = new Ray(from, to - from);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit) && hit.collider.gameObject.tag == "Player")
         {
@@ -141,6 +146,14 @@ public class RockController : MonoBehaviour, IEnemyController {
                 break;
             }
             playerSees = false;
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && rigidbody.velocity.magnitude > 0.2f)
+        {
+            player.GetComponent<PlayerController>().Die();
         }
     }
 }

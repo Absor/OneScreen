@@ -33,31 +33,33 @@ public class EnemyManager : MonoBehaviour {
     private void spawnEnemy()
     {
         int x, y;
+        float spawnDistance = minSpawnDistance;
         do
         {
             x = Random.Range(2, mazeGrid.Length - 2);
             y = Random.Range(2, mazeGrid[0].Length - 2);
-        } while (!isLocationGood(x, y));
+            spawnDistance -= 0.1f;
+        } while (!isLocationGood(x, y, spawnDistance));
 
         GameObject randomEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Length)]) as GameObject;
         randomEnemy.transform.SetParent(transform);
         randomEnemy.transform.position = new Vector3(x, 0, y);
         IEnemyController enemyController = randomEnemy.GetComponentInChildren(typeof(IEnemyController)) as IEnemyController;
-        enemyController.StartBrain(mazeGrid, player, this);
+        enemyController.StartBrain(mazeController, player, this);
         enemiesInMaze.Add(randomEnemy);
     }
 
-    private bool isLocationGood(int x, int y)
+    private bool isLocationGood(int x, int y, float spawnDistance)
     {
         Vector3 positionToBe = new Vector3(x, 0, y);
         bool close = false;
         foreach(GameObject enemy in enemiesInMaze) {
-            if (Vector3.Distance(enemy.transform.position, positionToBe) < minSpawnDistance)
+            if (Vector3.Distance(enemy.transform.position, positionToBe) < spawnDistance)
             {
                 close = true;
             }
         }
-        if (Vector3.Distance(player.transform.position, positionToBe) < minSpawnDistance)
+        if (Vector3.Distance(player.transform.position, positionToBe) < spawnDistance)
         {
             close = true;
         }
