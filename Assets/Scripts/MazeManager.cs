@@ -43,6 +43,30 @@ public class MazeManager : MonoBehaviour {
 
     private GameObject[][] floorObjects;
 
+    private int currentLevel = 0;
+    private int lastLevel = 0;
+    [SerializeField]
+    private int winLevel = 3;
+
+    [SerializeField]
+    private HighScore highScore;
+    [SerializeField]
+    private EndGame endGame;
+    [SerializeField]
+    private StartNewGame startNewGame;
+
+    private float timeSinceStart = 0;
+
+    public int GetSizeX()
+    {
+        return sizeX;
+    }
+
+    public int GetSizeY()
+    {
+        return sizeY;
+    }
+
 	void Start () {
         sizeX = Mathf.Max(sizeX, 17);
         sizeY = Mathf.Max(sizeY, 9);
@@ -59,8 +83,6 @@ public class MazeManager : MonoBehaviour {
         mazeEndY = sizeY - 1;
         mazeStartX = mazeEndX;
         mazeStartY = 0;
-
-        StartNewRound();
 	}
 
     public bool[][] GetMazeGrid()
@@ -82,6 +104,22 @@ public class MazeManager : MonoBehaviour {
         Time.timeScale = 1;
         Light flashLight = player.GetComponentInChildren<Light>();
         flashLight.enabled = true;
+        if (currentLevel != lastLevel)
+        {
+            lastLevel = currentLevel;
+            if (currentLevel == winLevel - 1)
+            {
+                player.GetComponent<PlayerController>().SayLastLevel();
+            }
+            else
+            {
+                player.GetComponent<PlayerController>().SaySuccess();
+            }
+        }
+        else
+        {
+            player.GetComponent<PlayerController>().SayWhoKilledMe();
+        }
     }
 
     private Vector3 getPlayerStartPosition()
@@ -89,13 +127,18 @@ public class MazeManager : MonoBehaviour {
         return new Vector3(mazeStartX, 0, mazeStartY + 1);
     }
 
-    private void createNewMaze()
+    private void cleanUp()
     {
-        // Clean old
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
         }
+    }
+
+    private void createNewMaze()
+    {
+        // Clean old
+        cleanUp();
 
         // New grid
         createMazeGrid();
@@ -121,14 +164,14 @@ public class MazeManager : MonoBehaviour {
         floorObjects = new GameObject[sizeX][];
         for (int x = 0; x < sizeX; x++)
         {
-            floorObjects = new GameObject[sizeY][];
+            floorObjects[x] = new GameObject[sizeY];
             for (int y = 0; y < sizeY; y++)
             {
                 GameObject floor = Instantiate(floorPrefab) as GameObject;
                 floor.transform.SetParent(transform);
                 floor.transform.position = new Vector3(x, -1, y);
                 floor.name = "Floor " + x + ", " + y;
-
+                floorObjects[x][y] = floor;
             }
         }
 
@@ -158,6 +201,11 @@ public class MazeManager : MonoBehaviour {
     public void DisableFloorTile(int x, int y)
     {
         floorObjects[x][y].SetActive(false);
+    }
+
+    public void EnableFloorTile(int x, int y)
+    {
+        floorObjects[x][y].SetActive(true);
     }
 
     // Random Prim
@@ -237,10 +285,35 @@ public class MazeManager : MonoBehaviour {
 
     public void EndMaze()
     {
+        currentLevel++;
         Time.timeScale = 0;
         Light flashLight = player.GetComponentInChildren<Light>();
         flashLight.enabled = false;
-        StartCoroutine(movePlayer(player.transform.position, new Vector3(mazeEndX, 0, mazeEndY), 2f, mazeEnded));
+        if (currentLevel >= winLevel)
+        {
+            StartCoroutine(movePlayer(player.transform.position, new Vector3(mazeEndX, 0, mazeEndY), 2f, gameEnded));
+        }
+        else
+        {
+            StartCoroutine(movePlayer(player.transform.position, new Vector3(mazeEndX, 0, mazeEndY), 2f, mazeEnded));
+        }
+    }
+
+    private void gameEnded()
+    {
+        cleanUp();
+        enemyController.StopSpawningEnemies();
+        player.transform.position = new Vector3(-100, 0, -100);
+        endGame.ShowGui(timeSinceStart);
+        highScore.AddTime(timeSinceStart);
+    }
+
+    private void suddenEnd()
+    {
+        cleanUp();
+        enemyController.StopSpawningEnemies();
+        player.transform.position = new Vector3(-100, 0, -100);
+        startNewGame.ShowGui();
     }
 
     private void mazeEnded()
@@ -262,5 +335,23 @@ public class MazeManager : MonoBehaviour {
         }
 
         done();
+    }
+
+    public void StartNewGame()
+    {
+        currentLevel = 0;
+        lastLevel = 0;
+        timeSinceStart = 0;
+        StartNewRound();
+    }
+
+    void Update()
+    {
+        timeSinceStart += Time.deltaTime;
+
+        if (Input.GetAxis("Cancel") > 0)
+        {
+            suddenEnd();
+        }
     }
 }

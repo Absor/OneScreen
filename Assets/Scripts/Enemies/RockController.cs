@@ -89,7 +89,7 @@ public class RockController : MonoBehaviour, IEnemyController {
     {
         if (!moving)
         {
-            lastMovement += Time.deltaTime * Time.timeScale;
+            lastMovement += Time.deltaTime;
             if (lastMovement > 1)
             {
                 xSpeed = xSpeed * -1;
@@ -112,6 +112,11 @@ public class RockController : MonoBehaviour, IEnemyController {
         sound.volume = Mathf.Clamp(rigidbody.velocity.magnitude, 0, 1);
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        OnTriggerStay(other);
+    }
+
     void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag != "PlayerView")
@@ -132,6 +137,7 @@ public class RockController : MonoBehaviour, IEnemyController {
         {
             StartCoroutine(die());
             triggered = true;
+            player.GetComponent<PlayerController>().SayWarning("rock");
         }
     }
 
@@ -153,7 +159,7 @@ public class RockController : MonoBehaviour, IEnemyController {
     {
         if (collision.gameObject.tag == "Player" && rigidbody.velocity.magnitude > 0.2f)
         {
-            player.GetComponent<PlayerController>().Die();
+            player.GetComponent<PlayerController>().Die("rock");
         }
     }
 }

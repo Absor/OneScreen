@@ -63,11 +63,13 @@ public class EnemyManager : MonoBehaviour {
         {
             close = true;
         }
+
         return !mazeGrid[x][y] && !close;
     }
 
     public void StopSpawningEnemies()
     {
+        StopAllCoroutines();
         foreach (GameObject enemy in enemiesInMaze)
         {
             Destroy(enemy);

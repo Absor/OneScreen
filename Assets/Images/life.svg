@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="life.png"
+   inkscape:export-filename="C:\Users\Heikki\Documents\OneScreen\Assets\life.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="78.526618"
+     inkscape:cy="63.48919"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-924.36218)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#f2f2f2;stroke:#f2f2f2"
+       id="path2995"
+       sodipodi:cx="64.910713"
+       sodipodi:cy="31.392857"
+       sodipodi:rx="19.017857"
+       sodipodi:ry="16.785715"
+       d="m 83.92857,31.392857 a 19.017857,16.785715 0 1 1 -38.035713,0 19.017857,16.785715 0 1 1 38.035713,0 z"
+       transform="translate(0,924.36218)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#f2f2f2;stroke:#f2f2f2"
+       id="path2999"
+       sodipodi:cx="64.64286"
+       sodipodi:cy="80.410713"
+       sodipodi:rx="31.071428"
+       sodipodi:ry="35.625"
+       d="m 95.714289,80.410713 a 31.071428,35.625 0 1 1 -62.142857,0 31.071428,35.625 0 1 1 62.142857,0 z"
+       transform="translate(0,924.36218)" />
+  </g>
+</svg>

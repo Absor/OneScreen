@@ -45,6 +45,11 @@ public class SpiderController : MonoBehaviour, IEnemyController {
         }               
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        OnTriggerStay(other);
+    }
+
     void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag != "PlayerView")
@@ -71,6 +76,7 @@ public class SpiderController : MonoBehaviour, IEnemyController {
             int toX = Mathf.RoundToInt(player.transform.position.x);
             int toY = Mathf.RoundToInt(player.transform.position.z);
             waypoints = PathFinder.FindPath(mazeGrid, fromX, fromY, toX, toY);
+            player.GetComponent<PlayerController>().SayWarning("spider");
         }
     }
 
@@ -92,7 +98,7 @@ public class SpiderController : MonoBehaviour, IEnemyController {
     {
         if (collision.gameObject.tag == "Player")
         {
-            player.GetComponent<PlayerController>().Die();
+            player.GetComponent<PlayerController>().Die("spider");
         }
     }
 
